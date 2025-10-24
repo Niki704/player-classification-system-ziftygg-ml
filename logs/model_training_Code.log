@@ -1,0 +1,114 @@
+[Running] python -u "c:\Users\nikle\OneDrive\Desktop\HDSE 24.2\Project Files\ML\player-classification-system-ziftygg-ml\src\train_model.py"
+======================================================================
+ZIFTY PLAYER CLASSIFICATION - MODEL TRAINING
+======================================================================
+
+[1/8] Loading processed data...
+Successfully loaded 2001 records
+   Features: 14 columns
+   Samples: 2001 rows
+
+[2/8] Preparing features and target variable...
+   Features prepared:
+   Numerical: ['mp_kd_ratio', 'mp_legendary_streak', 'experience_level']
+   Categorical: ['daily_play_time', 'codm_experience']
+   Target: performance_score (regression)
+   Target classes: ['B' 'D' 'C' 'E' 'A']
+
+[3/8] Splitting data into training and testing sets...
+
+Class distribution:
+player_class
+A      1
+B     77
+C    879
+D    988
+E     56
+Name: count, dtype: int64
+
+Warning: Smallest class has only 1 sample(s)
+Using random split without stratification
+   Data split complete:
+   Training set: 1600 samples (80.0%)
+   Testing set: 401 samples (20.0%)
+
+[4/8] Creating preprocessing pipeline...
+  Preprocessing pipeline created
+   - Numerical features: StandardScaler
+   - Categorical features: OneHotEncoder
+
+[5/8] Training multiple regression models...
+
+Training models (this may take a minute)...
+
+Training Linear Regression...
+   Test MSE: 2.23, Test R�: 0.982, Test MAE: 1.18
+Training Ridge Regression...
+   Test MSE: 2.24, Test R�: 0.982, Test MAE: 1.18
+Training Random Forest...
+   Test MSE: 7.01, Test R�: 0.944, Test MAE: 2.06
+Training Gradient Boosting...
+   Test MSE: 4.20, Test R�: 0.967, Test MAE: 1.63
+
+[6/8] Evaluating and selecting best model...
+
+ Best Model: Linear Regression
+   Test MSE: 2.23
+   Test MAE: 1.18
+   Test R�: 0.982
+   CV MSE: 2.29
+
+  Model Comparison:
+--------------------------------------------------------------------------------
+Model                Train MSE    Test MSE     Test R�      Test MAE    
+--------------------------------------------------------------------------------
+* Linear Regression  2.27         2.23         0.982        1.18        
+   Ridge Regression   2.27         2.24         0.982        1.18        
+   Random Forest      1.89         7.01         0.944        2.06        
+   Gradient Boosting  1.23         4.20         0.967        1.63        
+--------------------------------------------------------------------------------
+
+[7/8] Evaluating classification accuracy...
+
+ Classification Accuracy: 93.02%
+
+ Classification Report:
+              precision    recall  f1-score   support
+
+           A       0.00      0.00      0.00         1
+           B       0.90      0.86      0.88        21
+           C       0.91      0.95      0.93       167
+           D       0.96      0.92      0.94       207
+           E       0.56      1.00      0.71         5
+
+    accuracy                           0.93       401
+   macro avg       0.67      0.75      0.69       401
+weighted avg       0.93      0.93      0.93       401
+
+
+[8/8] Saving model and generating reports...
+ Model saved: models/player_classification_model.pkl
+ Metrics saved: models/model_metrics.json
+
+ Creating performance visualizations...
+ Saved: reports/model_performance_report.png
+ Saved: reports/confusion_matrix.png
+
+======================================================================
+MODEL TRAINING COMPLETE!
+======================================================================
+
+ Generated files:
+   1. models/player_classification_model.pkl
+   2. models/model_metrics.json
+   3. reports/model_performance_report.png
+   4. reports/confusion_matrix.png
+
+ Model Performance Summary:
+   Best Model: Linear Regression
+   Test R� Score: 0.982
+   Test MAE: 1.18 points
+   Classification Accuracy: 93.02%
+
+[Done] exited with code=0 in 8.973 seconds
+

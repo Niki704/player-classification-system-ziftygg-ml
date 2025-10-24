@@ -1,0 +1,123 @@
+[Running] python -u "c:\Users\nikle\OneDrive\Desktop\HDSE 24.2\Project Files\ML\player-classification-system-ziftygg-ml\src\train_model.py"
+======================================================================
+ZIFTY PLAYER CLASSIFICATION - MODEL TRAINING
+======================================================================
+
+[1/8] Loading processed data...
+Successfully loaded 2001 records
+   Features: 14 columns
+   Samples: 2001 rows
+
+[2/8] Preparing features and target variable...
+   Features prepared:
+   Numerical: ['mp_kd_ratio', 'mp_legendary_streak', 'experience_level']
+   Categorical: ['daily_play_time', 'codm_experience']
+   Target: performance_score (regression)
+   Target classes: ['A' 'C' 'B' 'D' 'E']
+
+[3/8] Splitting data into training and testing sets...
+
+Class distribution:
+player_class
+A    204
+B    946
+C    685
+D    136
+E     30
+Name: count, dtype: int64
+Using stratified split to maintain class proportions
+   Data split complete:
+   Training set: 1600 samples (80.0%)
+   Testing set: 401 samples (20.0%)
+
+[4/8] Creating preprocessing pipeline...
+  Preprocessing pipeline created
+   - Numerical features: StandardScaler
+   - Categorical features: OneHotEncoder
+
+[5/8] Training multiple regression models...
+
+Training models (this may take a minute)...
+
+Training Linear Regression...
+   Test MSE: 6.69, Test R2: 0.962, Test MAE: 2.02
+Training Ridge Regression...
+   Test MSE: 6.69, Test R2: 0.962, Test MAE: 2.02
+Training Random Forest...
+   Test MSE: 7.50, Test R2: 0.957, Test MAE: 2.15
+Training Gradient Boosting...
+   Test MSE: 4.34, Test R2: 0.975, Test MAE: 1.65
+
+[6/8] Evaluating and selecting best model...
+
+ Best Model: Gradient Boosting
+   Test MSE: 4.34
+   Test MAE: 1.65
+   Test R2: 0.975
+   CV MSE: 4.75
+
+  Model Comparison:
+--------------------------------------------------------------------------------
+Model                Train MSE    Test MSE     Test R2      Test MAE    
+--------------------------------------------------------------------------------
+   Linear Regression  8.75         6.69         0.962        2.02        
+   Ridge Regression   8.75         6.69         0.962        2.02        
+   Random Forest      2.18         7.50         0.957        2.15        
+* Gradient Boosting  1.36         4.34         0.975        1.65        
+--------------------------------------------------------------------------------
+
+[7/8] Evaluating classification accuracy...
+
+ Classification Accuracy: 90.27%
+
+ Classification Report:
+              precision    recall  f1-score   support
+
+           A       0.85      0.83      0.84        41
+           B       0.92      0.93      0.92       190
+           C       0.90      0.93      0.91       137
+           D       0.87      0.74      0.80        27
+           E       1.00      0.67      0.80         6
+
+    accuracy                           0.90       401
+   macro avg       0.91      0.82      0.86       401
+weighted avg       0.90      0.90      0.90       401
+
+
+[8/8] Saving model and generating reports...
+ Model saved: models/player_classification_model.pkl
+ Metrics saved: models/model_metrics.json
+
+ Creating performance visualizations...
+ Saved: reports/model_performance_report.png
+ Saved: reports/confusion_matrix.png
+
+ Extracting feature importance...
+ Saved: reports/feature_importance.png
+
+Top 5 Most Important Features:
+   mp_kd_ratio: 0.2913
+   mp_legendary_streak: 0.1615
+   daily_play_time_More than 3 hours: 0.1568
+   experience_level: 0.1493
+   daily_play_time_Less than 1 hour: 0.0837
+
+======================================================================
+MODEL TRAINING COMPLETE!
+======================================================================
+
+ Generated files:
+   1. models/player_classification_model.pkl
+   2. models/model_metrics.json
+   3. reports/model_performance_report.png
+   4. reports/confusion_matrix.png
+   5. reports/feature_importance.png
+
+ Model Performance Summary:
+   Best Model: Gradient Boosting
+   Test R2 Score: 0.975
+   Test MAE: 1.65 points
+   Classification Accuracy: 90.27%
+
+[Done] exited with code=0 in 8.827 seconds
+

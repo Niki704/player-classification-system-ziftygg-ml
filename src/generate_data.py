@@ -201,43 +201,45 @@ def calculate_performance_score(row):
     """
     Calculate player performance score (0-100) based on weighted features
     
-    Weight Distribution:
-    - K/D Ratio: 40% (0-40 points)
-    - MP Legendary Streak: 25% (0-25 points)
-    - Experience Level: 15% (0-15 points)
-    - Daily Play Time: 10% (0-10 points)
-    - CODM Experience: 10% (0-10 points)
+    NEW Weight Distribution:
+    - MP Legendary Streak: 20% (0-20 points, CAPPED at 15 seasons)
+    - CODM Experience: 15% (0-15 points)
+    - K/D Ratio: 30% (0-30 points)
+    - Daily Play Time: 25% (0-25 points)
+    - Experience Level: 10% (0-10 points)
     """
     
-    # K/D Ratio score (0-40 points)
-    # 0.5 or less = 0 points, 4.0+ = 40 points
-    kd_score = min(40, max(0, (row['mp_kd_ratio'] - 0.5) / 3.5 * 40))
+    # 1. MP Legendary Streak: 20 points MAX, CAPPED at 15 seasons
+    legendary_capped = min(15, row['mp_legendary_streak'])
+    legendary_score = (legendary_capped / 15) * 20  # 0→0, 15→20
     
-    # Legendary streak score (0-25 points)
-    # Each season = 1 point, capped at 25
-    legendary_score = min(25, row['mp_legendary_streak'])
-    
-    # Experience level score (0-15 points)
-    # Level 50 = 0 points, Level 400 = 15 points
-    level_score = min(15, max(0, (row['experience_level'] - 50) / 350 * 15))
-    
-    # Daily play time score (0-10 points)
-    play_time_map = {
-        'Less than 1 hour': 3,
-        '1-2 hours': 6,
-        '2-3 hours': 8,
-        'More than 3 hours': 10
-    }
-    play_time_score = play_time_map.get(row['daily_play_time'], 5)
-    
-    # CODM experience score (0-10 points)
+    # 2. CODM Experience: 15 points
     experience_map = {
-        'Less than 1 year': 3,
-        '1-2 years': 5,
-        '2-3 years': 7,
-        'More than 3 years': 10
+        'Less than 1 year': 3.75,      # 25% of 15
+        '1-2 years': 7.5,              # 50% of 15
+        '2-3 years': 11.25,            # 75% of 15
+        'More than 3 years': 15        # 100% of 15
     }
-    experience_score = experience_map.get(row['codm_experience'], 5)
+    experience_score = experience_map.get(row['codm_experience'], 7.5)
+    
+    # 3. K/D Ratio: 30 points (CAPPED at 2.5)
+    kd_capped = min(2.5, row['mp_kd_ratio'])
+    kd_normalized = (kd_capped - 0.5) / 2.0  # 0.5→0, 2.5→1
+    kd_score = min(30, max(0, kd_normalized * 30))
+
+    
+    # 4. Daily Play Time: 25 points
+    play_time_map = {
+        'Less than 1 hour': 6.25,      # 25% of 25
+        '1-2 hours': 12.5,             # 50% of 25
+        '2-3 hours': 18.75,            # 75% of 25
+        'More than 3 hours': 25        # 100% of 25
+    }
+    play_time_score = play_time_map.get(row['daily_play_time'], 12.5)
+    
+    # 5. Experience Level: 10 points
+    level_normalized = (row['experience_level'] - 50) / 350  # 50→0, 400→1
+    level_score = min(10, max(0, level_normalized * 10))
     
     # Calculate total score
     total = kd_score + legendary_score + level_score + play_time_score + experience_score
@@ -253,16 +255,18 @@ combined_data['performance_score'] = combined_data.apply(calculate_performance_s
 
 # Step 7: Assign player classes
 def assign_class(score):
-    if score >= 81:
+    """NEW CLASS BOUNDARIES"""
+    if score >= 71:
         return 'A'
-    elif score >= 61:
+    elif score >= 51:
         return 'B'
-    elif score >= 41:
+    elif score >= 35:
         return 'C'
-    elif score >= 21:
+    elif score >= 26:
         return 'D'
     else:
         return 'E'
+
 
 combined_data['player_class'] = combined_data['performance_score'].apply(assign_class)
 

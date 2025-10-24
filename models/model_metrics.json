@@ -1,0 +1,29 @@
+{
+    "best_model": "Gradient Boosting",
+    "test_mse": 4.343937071481623,
+    "test_mae": 1.6532642598637552,
+    "test_r2": 0.9751588268225181,
+    "classification_accuracy": 0.9027431421446384,
+    "all_models": {
+        "Linear Regression": {
+            "test_mse": 6.68881687229069,
+            "test_r2": 0.9617494324750051,
+            "test_mae": 2.0204269039333385
+        },
+        "Ridge Regression": {
+            "test_mse": 6.690634437001796,
+            "test_r2": 0.9617390385767955,
+            "test_mae": 2.0204848351195768
+        },
+        "Random Forest": {
+            "test_mse": 7.504260328784774,
+            "test_r2": 0.9570862497939759,
+            "test_mae": 2.1528024163561574
+        },
+        "Gradient Boosting": {
+            "test_mse": 4.343937071481623,
+            "test_r2": 0.9751588268225181,
+            "test_mae": 1.6532642598637552
+        }
+    }
+}

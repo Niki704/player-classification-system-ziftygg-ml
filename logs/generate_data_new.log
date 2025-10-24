@@ -1,0 +1,121 @@
+[Running] python -u "c:\Users\nikle\OneDrive\Desktop\HDSE 24.2\Project Files\ML\player-classification-system-ziftygg-ml\src\generate_data.py"
+
+Loading real data from Google Form responses...
+Successfully loaded 69 real responses
+
+Columns found: 11
+Rows found: 69
+
+Cleaning data...
+Clean data: 69 records
+
+Analyzing real data distributions...
+
+K/D Ratio: mean=1.87, std=0.55, range=[0.94, 4.10]
+MP Legendary Streak: mean=4.75, std=6.64, range=[0, 31]
+Experience Level: mean=290.01, std=118.07, range=[58, 400]
+
+Daily Play Time Distribution: {'1-2 hours': 0.34782608695652173, 'Less than 1 hour': 0.30434782608695654, 'More than 3 hours': 0.18840579710144928, '2-3 hours': 0.15942028985507245}
+CODM Experience Distribution: {'Less than 1 year': 0.4057971014492754, 'More than 3 years': 0.3188405797101449, '1-2 years': 0.17391304347826086, '2-3 years': 0.10144927536231885}
+Preferred Mode Distribution: {'Both': 0.5652173913043478, 'Multiplayer (MP)': 0.2318840579710145, 'Battle Royale (BR)': 0.2028985507246377}
+
+Generating 1932 synthetic records...
+   Generated 500/1932 records...
+   Generated 1000/1932 records...
+   Generated 1500/1932 records...
+Synthetic data generated: 1932 records
+
+Combining real and synthetic data...
+Total records: 2001
+Real: 69, Synthetic: 1932
+
+Creating performance score...
+
+============================================================
+FINAL DATASET STATISTICS
+============================================================
+
+Total records: 2001
+Real data: 69
+Synthetic data: 1932
+
+--- Performance Score Distribution ---
+count    2001.000000
+mean       53.755722
+std        13.402924
+min        15.700000
+25%        44.400000
+50%        53.500000
+75%        63.000000
+max       100.000000
+Name: performance_score, dtype: float64
+
+--- Player Class Distribution ---
+   Class A: 204 players (10.2%)
+   Class B: 946 players (47.3%)
+   Class C: 685 players (34.2%)
+   Class D: 136 players (6.8%)
+   Class E: 30 players (1.5%)
+
+Percentages:
+player_class
+A    10.194903
+B    47.276362
+C    34.232884
+D     6.796602
+E     1.499250
+Name: proportion, dtype: float64
+
+--- Feature Statistics ---
+
+K/D Ratio:
+count    2001.000000
+mean        1.848926
+std         0.573642
+min         0.500000
+25%         1.470000
+50%         1.800000
+75%         2.160000
+max         4.470000
+Name: mp_kd_ratio, dtype: float64
+
+MP Legendary Streak:
+count    2001.000000
+mean        4.605197
+std         4.697665
+min         0.000000
+25%         1.000000
+50%         4.000000
+75%         7.000000
+max        31.000000
+Name: mp_legendary_streak, dtype: float64
+
+Experience Level:
+count    2001.000000
+mean      244.972514
+std       105.982545
+min        50.000000
+25%       162.000000
+50%       245.000000
+75%       339.000000
+max       400.000000
+Name: experience_level, dtype: float64
+
+Dataset saved as 'data/processed/zifty_player_data_complete_2000.csv'
+
+Creating data validation visualizations...
+Saved visualization: reports/data_validation_report.png
+
+============================================================
+DATA GENERATION COMPLETE!
+============================================================
+
+Generated files:
+  1. data/processed/zifty_player_data_complete_2000.csv
+  2. reports/data_validation_report.png
+
+You can now proceed to model training!
+============================================================
+
+[Done] exited with code=0 in 3.768 seconds
+
