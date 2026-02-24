@@ -1,29 +1,5 @@
 {
-    "best_model": "Linear Regression",
-    "test_mse": 17.062732609492887,
-    "test_mae": 3.45626547149946,
-    "test_r2": 0.916327364151442,
-    "classification_accuracy": 0.9047619047619048,
-    "all_models": {
-        "Linear Regression": {
-            "test_mse": 17.062732609492887,
-            "test_r2": 0.916327364151442,
-            "test_mae": 3.45626547149946
-        },
-        "Ridge Regression": {
-            "test_mse": 18.973707021115587,
-            "test_r2": 0.9069562821730103,
-            "test_mae": 3.552616849698238
-        },
-        "Random Forest": {
-            "test_mse": 23.64941230664113,
-            "test_r2": 0.8840274468777015,
-            "test_mae": 3.936888516113514
-        },
-        "Gradient Boosting": {
-            "test_mse": 17.7191659269723,
-            "test_r2": 0.9131083307650923,
-            "test_mae": 3.243554861396961
-        }
-    }
+    "best_model": "Random Forest",
+    "classification_accuracy": 0.8095238095238095,
+    "test_r2": 0.9250735807451947
 }
