@@ -75,7 +75,7 @@ print(f"CODM Experience Distribution: {codm_exp_dist}")
 print(f"Preferred Mode Distribution: {preferred_mode_dist}")
 
 # Step 4: Generate synthetic data
-print(f"\nGenerating 1932 synthetic records...")
+print(f"\nGenerating 70 synthetic records...")
 
 def generate_correlated_synthetic_data(n_samples, real_data):
     """
@@ -166,13 +166,13 @@ def generate_correlated_synthetic_data(n_samples, real_data):
         synthetic_records.append(record)
 
         # Progress indicator
-        if (i + 1) % 500 == 0:
+        if (i + 1) % 10 == 0:
             print(f"   Generated {i + 1}/{n_samples} records...")
     
     return pd.DataFrame(synthetic_records)
 
 # Generate synthetic data
-synthetic_data = generate_correlated_synthetic_data(1932, real_data_clean)
+synthetic_data = generate_correlated_synthetic_data(70, real_data_clean)
 
 print(f"Synthetic data generated: {len(synthetic_data)} records")
 
@@ -199,53 +199,61 @@ print("\nCreating performance score...")
 
 def calculate_performance_score(row):
     """
-    Calculate player performance score (0-100) based on weighted features
+    Calculate player performance score (0-100) based on weighted features.
     
-    NEW Weight Distribution:
-    - MP Legendary Streak: 20% (0-20 points, CAPPED at 15 seasons)
-    - CODM Experience: 15% (0-15 points)
-    - K/D Ratio: 30% (0-30 points)
-    - Daily Play Time: 25% (0-25 points)
-    - Experience Level: 10% (0-10 points)
+    NEW DYNAMIC CODM WEIGHT DISTRIBUTION:
+    - MP Legendary Streak: 35% (Capped at 18 seasons to reflect long-term veterans)
+    - K/D Ratio: 30% (Dynamically scaled: 1-5 for new players, 1-2.5 for veterans)
+    - Daily Play Time: 15% (Rewards dedication/progress, allows new players to score well)
+    - Experience Level: 10% (General game time indicator, caps at 400)
+    - CODM Experience: 10% (Account age baseline)
     """
     
-    # 1. MP Legendary Streak: 20 points MAX, CAPPED at 15 seasons
-    legendary_capped = min(15, row['mp_legendary_streak'])
-    legendary_score = (legendary_capped / 15) * 20  # 0→0, 15→20
+    # 1. MP Legendary Streak: 35 points MAX (Capped at 18 seasons)
+    legendary_capped = min(18, row['mp_legendary_streak'])
+    legendary_score = (legendary_capped / 18) * 35
     
-    # 2. CODM Experience: 15 points
-    experience_map = {
-        'Less than 1 year': 3.75,      # 25% of 15
-        '1-2 years': 7.5,              # 50% of 15
-        '2-3 years': 11.25,            # 75% of 15
-        'More than 3 years': 15        # 100% of 15
-    }
-    experience_score = experience_map.get(row['codm_experience'], 7.5)
+    # 2. K/D Ratio: 30 points MAX (Dynamic Scaling)
+    kd = row['mp_kd_ratio']
+    exp_years = row['codm_experience']
     
-    # 3. K/D Ratio: 30 points (CAPPED at 2.5)
-    kd_capped = min(2.5, row['mp_kd_ratio'])
-    kd_normalized = (kd_capped - 0.5) / 2.0  # 0.5→0, 2.5→1
-    kd_score = min(30, max(0, kd_normalized * 30))
-
-    
-    # 4. Daily Play Time: 25 points
+    if exp_years in ['Less than 1 year', '1-2 years']:
+        # New players get bot lobbies, K/D is inflated. Scale from 1.0 to 5.0.
+        kd_capped = min(5.0, max(1.0, kd))
+        kd_score = ((kd_capped - 1.0) / 4.0) * 30
+    else:
+        # Veteran players face real players/SBMM, K/D is harder. Scale from 1.0 to 2.5.
+        kd_capped = min(2.5, max(1.0, kd))
+        kd_score = ((kd_capped - 1.0) / 1.5) * 30
+        
+    # 3. Daily Play Time: 15 points MAX 
+    # Heavily rewards active learners and helps balance out new players lacking years of history
     play_time_map = {
-        'Less than 1 hour': 6.25,      # 25% of 25
-        '1-2 hours': 12.5,             # 50% of 25
-        '2-3 hours': 18.75,            # 75% of 25
-        'More than 3 hours': 25        # 100% of 25
+        'Less than 1 hour': 3.75,      # 25% of 15
+        '1-2 hours': 7.5,              # 50% of 15
+        '2-3 hours': 11.25,            # 75% of 15
+        'More than 3 hours': 15.0      # 100% of 15
     }
-    play_time_score = play_time_map.get(row['daily_play_time'], 12.5)
+    play_time_score = play_time_map.get(row['daily_play_time'], 7.5)
+
+    # 4. Experience Level: 10 points MAX (Level 1 to 400)
+    level_normalized = min(400, max(1, row['experience_level'])) / 400
+    level_score = level_normalized * 10
     
-    # 5. Experience Level: 10 points
-    level_normalized = (row['experience_level'] - 50) / 350  # 50→0, 400→1
-    level_score = min(10, max(0, level_normalized * 10))
+    # 5. CODM Experience (Years): 10 points MAX
+    experience_map = {
+        'Less than 1 year': 2.5,       # 25% of 10
+        '1-2 years': 5.0,              # 50% of 10
+        '2-3 years': 7.5,              # 75% of 10
+        'More than 3 years': 10.0      # 100% of 10
+    }
+    experience_score = experience_map.get(row['codm_experience'], 5.0)
     
     # Calculate total score
     total = kd_score + legendary_score + level_score + play_time_score + experience_score
     
-    # Add small random noise (±2 points) for realism
-    noise = np.random.normal(0, 1.5)
+    # Add a tiny bit of random noise (±1 point) for realism
+    noise = np.random.normal(0, 1.0)
     final_score = np.clip(total + noise, 0, 100)
     
     return round(final_score, 1)
@@ -255,18 +263,20 @@ combined_data['performance_score'] = combined_data.apply(calculate_performance_s
 
 # Step 7: Assign player classes
 def assign_class(score):
-    """NEW CLASS BOUNDARIES"""
-    if score >= 71:
-        return 'A'
-    elif score >= 51:
-        return 'B'
+    """
+    ADJUSTED CLASS BOUNDARIES
+    Accounts for the 18-season cap and the dynamic K/D scaling.
+    """
+    if score >= 75:
+        return 'A'  # Elite (Requires ~15+ Legendaries, max K/D bracket, and high activity)
+    elif score >= 55:
+        return 'B'  # Advanced (Great veterans, or incredibly dedicated/high K/D newer players)
     elif score >= 35:
-        return 'C'
-    elif score >= 26:
-        return 'D'
+        return 'C'  # Intermediate (The true average: Level 200-400, moderate K/D, a few Legendaries)
+    elif score >= 20:
+        return 'D'  # Beginner (Active but newer, or very casual older players)
     else:
-        return 'E'
-
+        return 'E'  # Novice (Brand new, low activity, sub-1.0 K/D)
 
 combined_data['player_class'] = combined_data['performance_score'].apply(assign_class)
 
@@ -300,7 +310,7 @@ print("\nExperience Level:")
 print(combined_data['experience_level'].describe())
 
 # Step 9: Save the combined dataset to proper location
-output_filename = 'data/processed/zifty_player_data_complete_2000.csv'
+output_filename = 'data/processed/zifty_player_data_complete_105.csv'
 combined_data.to_csv(output_filename, index=False)
 
 print(f"\nDataset saved as '{output_filename}'")

@@ -30,10 +30,10 @@ print("="*70)
 print("\n[1/8] Loading processed data...")
 
 try:
-    data = pd.read_csv('data/processed/zifty_player_data_complete_2000.csv')
+    data = pd.read_csv('data/processed/zifty_player_data_complete_105.csv')
     print(f"Successfully loaded {len(data)} records")
 except FileNotFoundError:
-    print("ERROR: Could not find 'data/processed/zifty_player_data_complete_2000.csv'")
+    print("ERROR: Could not find 'data/processed/zifty_player_data_complete_105.csv'")
     print("Please run the data generation script first.")
     exit()
 
@@ -229,11 +229,16 @@ y_pred_test = best_model.predict(X_test)
 
 # Convert predictions to classes
 def assign_class(score):
-    if score >= 71: return 'A'
-    elif score >= 51: return 'B'
-    elif score >= 35: return 'C'
-    elif score >= 26: return 'D'
-    else: return 'E'
+    if score >= 75:
+        return 'A'
+    elif score >= 55:
+        return 'B'
+    elif score >= 35:
+        return 'C'
+    elif score >= 20:
+        return 'D'
+    else:
+        return 'E'
 
 y_pred_class = [assign_class(score) for score in y_pred_test]
 
