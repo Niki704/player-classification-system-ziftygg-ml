@@ -27,10 +27,10 @@ print("="*70)
 print("\n[1/7] Loading processed data...")
 
 try:
-    data = pd.read_csv('data/processed/zifty_player_data_complete_105.csv')
+    data = pd.read_csv('data/processed/zifty_player_data_complete_534.csv')
     print(f"Successfully loaded {len(data)} records")
 except FileNotFoundError:
-    print("ERROR: Could not find 'data/processed/zifty_player_data_complete_105.csv'")
+    print("ERROR: Could not find 'data/processed/zifty_player_data_complete_534.csv'")
     exit()
 
 # ============================================================================
@@ -85,8 +85,8 @@ print("\n[4/7] Training regression models...")
 
 # Only using m2cgen-compatible models
 models = {
-    'Linear Regression': LinearRegression(),
-    'Ridge Regression': Ridge(alpha=1.0),
+    # 'Linear Regression': LinearRegression(),
+    # 'Ridge Regression': Ridge(alpha=1.0),
     'Random Forest': RandomForestRegressor(
         n_estimators=100,
         max_depth=15,
@@ -132,9 +132,9 @@ print(f"   Test R2: {results[best_model_name]['test_r2']:.3f}")
 y_pred_test = best_model.predict(X_test)
 
 def assign_class(score):
-    if score >= 85: return 'S'
-    elif score >= 70: return 'A'
-    elif score >= 55: return 'B'
+    if score >= 75: return 'S'
+    elif score >= 65: return 'A'
+    elif score >= 50: return 'B'
     elif score >= 35: return 'C'
     else: return 'D'
 

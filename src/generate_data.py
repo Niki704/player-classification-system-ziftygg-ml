@@ -172,7 +172,7 @@ def generate_correlated_synthetic_data(n_samples, real_data):
     return pd.DataFrame(synthetic_records)
 
 # Generate synthetic data
-synthetic_data = generate_correlated_synthetic_data(70, real_data_clean)
+synthetic_data = generate_correlated_synthetic_data(500, real_data_clean)
 
 print(f"Synthetic data generated: {len(synthetic_data)} records")
 
@@ -253,7 +253,7 @@ def calculate_performance_score(row):
     total = kd_score + legendary_score + level_score + play_time_score + experience_score
     
     # Add a tiny bit of random noise (±1 point) for realism
-    noise = np.random.normal(0, 1.0)
+    noise = np.random.normal(0, 0.1)
     final_score = np.clip(total + noise, 0, 100)
     
     return round(final_score, 1)
@@ -267,11 +267,11 @@ def assign_class(score):
     ADJUSTED CLASS BOUNDARIES (Strictly 5 Graded Tiers)
     'unranked' is reserved for accounts that haven't run the ML model.
     """
-    if score >= 85:
+    if score >= 75:
         return 'S'          # Supreme/Elite
-    elif score >= 70:
+    elif score >= 65:
         return 'A'          # Pro
-    elif score >= 55:
+    elif score >= 50:
         return 'B'          # Advanced
     elif score >= 35:
         return 'C'          # Intermediate
@@ -310,7 +310,7 @@ print("\nExperience Level:")
 print(combined_data['experience_level'].describe())
 
 # Step 9: Save the combined dataset to proper location
-output_filename = 'data/processed/zifty_player_data_complete_105.csv'
+output_filename = 'data/processed/zifty_player_data_complete_534.csv'
 combined_data.to_csv(output_filename, index=False)
 
 print(f"\nDataset saved as '{output_filename}'")

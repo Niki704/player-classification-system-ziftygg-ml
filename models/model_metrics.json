@@ -1,5 +1,5 @@
 {
     "best_model": "Random Forest",
-    "classification_accuracy": 0.6666666666666666,
-    "test_r2": 0.9486241267766219
+    "classification_accuracy": 0.7757009345794392,
+    "test_r2": 0.949329439794587
 }
