@@ -264,19 +264,19 @@ combined_data['performance_score'] = combined_data.apply(calculate_performance_s
 # Step 7: Assign player classes
 def assign_class(score):
     """
-    ADJUSTED CLASS BOUNDARIES
-    Accounts for the 18-season cap and the dynamic K/D scaling.
+    ADJUSTED CLASS BOUNDARIES (Strictly 5 Graded Tiers)
+    'unranked' is reserved for accounts that haven't run the ML model.
     """
-    if score >= 75:
-        return 'A'  # Elite (Requires ~15+ Legendaries, max K/D bracket, and high activity)
+    if score >= 85:
+        return 'S'          # Supreme/Elite
+    elif score >= 70:
+        return 'A'          # Pro
     elif score >= 55:
-        return 'B'  # Advanced (Great veterans, or incredibly dedicated/high K/D newer players)
+        return 'B'          # Advanced
     elif score >= 35:
-        return 'C'  # Intermediate (The true average: Level 200-400, moderate K/D, a few Legendaries)
-    elif score >= 20:
-        return 'D'  # Beginner (Active but newer, or very casual older players)
+        return 'C'          # Intermediate
     else:
-        return 'E'  # Novice (Brand new, low activity, sub-1.0 K/D)
+        return 'D'          # Novice/Beginner
 
 combined_data['player_class'] = combined_data['performance_score'].apply(assign_class)
 

@@ -132,11 +132,11 @@ print(f"   Test R2: {results[best_model_name]['test_r2']:.3f}")
 y_pred_test = best_model.predict(X_test)
 
 def assign_class(score):
-    if score >= 75: return 'A'
+    if score >= 85: return 'S'
+    elif score >= 70: return 'A'
     elif score >= 55: return 'B'
     elif score >= 35: return 'C'
-    elif score >= 20: return 'D'
-    else: return 'E'
+    else: return 'D'
 
 y_pred_class = [assign_class(score) for score in y_pred_test]
 class_accuracy = accuracy_score(y_class_test, y_pred_class)
